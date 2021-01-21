@@ -1,0 +1,91 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[pdftex]{graphicx}
+\usepackage{geometry}
+\geometry{margin=0.5in}
+\usepackage{asymptote}
+
+\begin{document}
+
+\section*{Minimal-Overlap Covering of a Hexagonal Gazebo}
+
+Given a graph $G = (V, E)$ and edge weights $w: E \to \mathbb{R}_{> 0}$,
+it is natural to ask for a minimum-weight path containing all edges.
+We describe an equivalent reformulation to this problem
+and apply it to the very real and important problem of covering the edges of a particular hexagonal gazebo as efficiently as possible.
+
+\subsection*{Reformulation}
+
+We define a \emph{path} on $G$ to be a sequence $p = v_0, e_1, v_1, \ldots, e_k, v_k$ such that
+$e_i$ is an edge from $v_{i-1}$ to $v_{i}$ for each $i$.
+We define a \emph{complete} path on $G$ to be a path $p = v_0, e_1, v_1, \ldots, e_k, v_k$ such that
+$E \subseteq \{e_1, \ldots, e_k\}$.
+We can extend the weight function to paths by defining $w(p) = \sum_{i} w(e_i)$.
+In this terminology, our original problem is to find a complete path on $p$ which minimizes $w(p)$.
+
+We call a path \emph{non-overlapping} when $e_i = e_j$ if and only if $i = j$
+and define an \emph{extension} $G' = (V, E')$ of $G$ to be the original graph with some number of the existing edges duplicated $1$ or more times.
+Note that any complete path $p$ on $G$
+induces an equal-weight, complete, non-overlapping path on the extension $G'$
+obtained by duplicating each edge in $G$ to match the number of times it appears in $p$.
+Conversely, any complete, non-overlapping path $p$ on an extension $G'$
+induces an equal-weight, complete path on $G$.
+Hence, our original problem is equivalent to finding the minimal weight
+over all complete, non-overlapping paths on any extension of $G$.
+The weight of a complete, non-overlapping path over a graph is simply the sum of all edge weights,
+so our final, equivalent reformulation is \emph{to find the minimal edge-weight over extensions of $G$ which admit a complete, non-overlapping path}.
+
+\subsection*{Gazebo Application}
+
+We wish to hang holiday lights on the edges of a hexagonal gazebo roof with a single strand of lights while minimizing waste.
+The roof and its relevant distances are modeled by the following graph with the obvious rotational symmetries:
+
+\begin{center}
+\begin{asy}
+    include olympiad;
+    size(7cm); 
+    defaultpen(1.5);
+
+    pair O = (0, 0);
+    pair A = dir(0);
+    pair B = dir(60); 
+    pair C = dir(120); 
+    pair D = dir(180); 
+    pair E = dir(240);
+    pair F = dir(300);
+
+    draw(A--D, black); 
+    draw(B--E, black); 
+    draw(C--F, black); 
+    draw(A--B--C--D--E--F--cycle, black);
+    label("$x$", A--B);
+    label("$y$", A--O);
+
+    label("$O$", O, 4N);
+    label("$A$", A, dir(A));
+    label("$B$", B, dir(B));
+    label("$C$", C, dir(C));
+    label("$D$", D, dir(D));
+    label("$E$", E, dir(E));
+    label("$F$", F, dir(F));
+\end{asy}
+\end{center}
+Note that, when projected flat, $\triangle{AOB}$ is equilateral,
+so $y \geq x$, with equality only in the case of a degenerate, flat roof.
+Any extension of this graph admitting a complete, non-overlapping path can have at most two vertices of odd degree\footnote{%
+    Vertices in the middle of a complete, non-overlapping path are entered exactly as many times as they are exited,
+    so only the start and end vertices can have odd degree%
+}.
+The above graph contains $6$ vertices with an odd degree,
+and each duplicated edge affects the degree of exactly $2$ vertices,
+so the desired extension must have at least $\frac{6-2}{2} = 2$ duplicated edges.
+Since $x < y$,
+the minimal possible weight added by these edges is $2 x$.
+It follows that all extensions which admit a complete, non-overlapping path have a total edge weight of at least $6 x + 6 y + 2 x = 8 x + 6 y$.
+From the equivalent formulation given above,
+the length of a light strand covering all edges is therefore bounded below by $8 x + 6 y$.
+The path determined by the sequence of vertices $A \to O \to B \to C \to O \to D \to E \to O \to F \to A \to B \to C \to D \to E \to F$
+has length $y + y + x + y + y + x + y + y + x + x + x + x + x + x = 8 x + 6 y$.
+Since it is achievable, $8 x + 6 y$ is the minimal possible length necessary to cover the gazebo edges.
+
+\end{document}
